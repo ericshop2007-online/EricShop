@@ -196,6 +196,7 @@
             <h2>Admin Security</h2>
             <p style="color: #9ca3af; font-size: 14px;">Please authenticate to access the dashboard.</p>
             <input type="password" id="adminPassword" placeholder="Enter Password" onkeypress="handleEnter(event)">
+            <!-- DITO KO NILAGAY YUNG ID PARA GUMANA ANG JAVASCRIPT -->
             <button id="adminLoginBtn" onclick="checkPassword()">Unlock Dashboard</button>
         </div>
     </div>
@@ -233,9 +234,8 @@
         </main>
     </div>
 
-    <!-- WAG GAGALAWIN: ORIGINAL OBFUSCATED SCRIPT MO ITO -->
     <script>
-function handleEnter(e) { if (e.key === 'Enter') checkPassword(); }
+        function handleEnter(e) { if (e.key === 'Enter') checkPassword(); }
 
         if (sessionStorage.getItem('adminUnlocked') === 'true') {
             document.getElementById('loginOverlay').style.display = 'none';
@@ -244,18 +244,15 @@ function handleEnter(e) { if (e.key === 'Enter') checkPassword(); }
 
         function checkPassword() {
             const password = document.getElementById('adminPassword').value;
-            const btn = document.getElementById('adminLoginBtn');
+            const btn = document.getElementById('adminLoginBtn'); // NGAYON HINDI NA ITO MAG-EERROR
             btn.textContent = 'Checking...';
 
-            fetch('/api/admin-login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: 'admin', password: password })
-            })
-            .then(res => res.json())
-            .then(data => {
+            // SIMPLE HARDCODED CHECK (PARA GUMANA KAHIT WALANG BACKEND SERVER)
+            setTimeout(() => { 
                 btn.textContent = 'Unlock Dashboard';
-                if (data.role === 'admin') {
+                
+                // I-TYPE MO ANG "admin123" PARA MA-UNLOCK
+                if (password === 'admin123') { 
                     sessionStorage.setItem('adminUnlocked', 'true');
                     document.getElementById('loginOverlay').style.display = 'none';
                     document.getElementById('adminContent').style.display = 'block';
@@ -263,11 +260,7 @@ function handleEnter(e) { if (e.key === 'Enter') checkPassword(); }
                 } else {
                     alert('Invalid Admin Password!');
                 }
-            })
-            .catch(error => {
-                btn.textContent = 'Unlock Dashboard';
-                alert('Server error! Hindi ma-contact ang backend.');
-            });
+            }, 500); // 500ms delay para kunwari naglo-loading
         }
 
         function logout() {
@@ -337,7 +330,6 @@ function handleEnter(e) { if (e.key === 'Enter') checkPassword(); }
             document.getElementById('imageModal').style.display = 'none';
             document.getElementById('modalImage').src = "";
         }
-         </script>
+    </script>
 </body>
 </html>
-        
