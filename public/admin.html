@@ -101,7 +101,7 @@
             <h2>Admin Security</h2>
             <p style="color: #b2bec3; font-size: 14px;">Enter the access key to continue</p>
             <input type="password" id="adminPassword" placeholder="Enter Password" onkeypress="handleEnter(event)">
-            <button onclick="checkPassword()">Unlock Dashboard</button>
+            <button id="adminLoginBtn" onclick="checkPassword()">Unlock Dashboard</button>
         </div>
     </div>
     
@@ -139,24 +139,53 @@
     </div>
 
     <script>
-       
-    fetch('/api/admin-login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-})
-.then(res => res.json())
-.then(data => {
-    if (data.role === 'admin') {
-        alert('Welcome Admin!');
-        // redirect sa dashboard
-    } else {
-        alert(data.message);
-    }
-});
+        // LOGIN LOGIC
+        function handleEnter(e) { if (e.key === 'Enter') checkPassword(); }
 
+        if (sessionStorage.getItem('adminUnlocked') === 'true') {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+        }
 
-        
+        function checkPassword() {
+            const password = document.getElementById('adminPassword').value;
+            const btn = document.getElementById('adminLoginBtn');
+            btn.textContent = 'Checking...';
+
+            fetch('/api/admin-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: 'admin', password: password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                btn.textContent = 'Unlock Dashboard';
+                if (data.role === 'admin') {
+                    sessionStorage.setItem('adminUnlocked', 'true');
+                    document.getElementById('loginOverlay').style.display = 'none';
+                    document.getElementById('adminContent').style.display = 'block';
+                    loadOrders();
+                } else {
+                    alert('Invalid Admin Password!');
+                }
+            })
+            .catch(error => {
+                btn.textContent = 'Unlock Dashboard';
+                alert('Server error! Hindi ma-contact ang backend.');
+            });
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminUnlocked');
+            location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (sessionStorage.getItem('adminUnlocked') === 'true') {
+                loadOrders();
+            }
+        });
+
         // TABLE LOGIC
         function loadOrders() {
             const tbody = document.getElementById('adminTableBody');
@@ -170,7 +199,6 @@
             tbody.innerHTML = '';
             orders.forEach((order, index) => {
                 
-                // Kapag may image na nakasave, magkakaroon ng View Receipt button
                 let viewImageButton = order.proofImage 
                     ? `<button class="btn-action btn-view" onclick="openModal(${index})">📷 View Receipt</button>` 
                     : '<span style="color:#d63031; font-size:12px;">No Image</span>';
@@ -201,7 +229,7 @@
             loadOrders(); 
         }
 
-        // MODAL LOGIC (Para mabuksan ang picture ng resibo)
+        // MODAL LOGIC
         function openModal(index) {
             let orders = JSON.parse(localStorage.getItem('ericShopOrders')) || [];
             if(orders[index] && orders[index].proofImage) {
