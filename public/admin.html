@@ -139,48 +139,7 @@
     </div>
 
     <script>
-        // LOGIN LOGIC (Same as before)
-        async function checkPassword() {
-            const input = document.getElementById('adminPassword').value;
-            const btn = document.querySelector('.login-box button');
-            btn.innerHTML = 'Checking...';
-            try {
-                const response = await fetch('/api/admin-login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: 'admin', password: input })
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    document.getElementById('loginOverlay').style.display = 'none';
-                    document.getElementById('adminContent').style.display = 'block';
-                    sessionStorage.setItem('adminUnlocked', 'true');
-                } else {
-                    alert('Access Denied: ' + data.message);
-                    document.getElementById('adminPassword').value = '';
-                }
-            } catch (error) {
-                alert('Server error! Make sure Node.js is running.');
-            } finally {
-                btn.innerHTML = 'Unlock Dashboard';
-            }
-        }
-
-        function handleEnter(e) { if (e.key === 'Enter') checkPassword(); }
-
-        if (sessionStorage.getItem('adminUnlocked') === 'true') {
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('adminContent').style.display = 'block';
-        }
-
-        function logout() {
-            sessionStorage.removeItem('adminUnlocked');
-            location.reload();
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            loadOrders();
-        });
+       
 
         // TABLE LOGIC
         function loadOrders() {
