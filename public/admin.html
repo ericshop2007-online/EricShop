@@ -79,7 +79,6 @@
         .btn-view:hover { background: #74b9ff; }
         .text-muted { color: #636e72; font-style: italic; }
 
-        /* MODAL PARA SA SCREENSHOT */
         #imageModal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center; flex-direction: column;
@@ -90,7 +89,6 @@
 </head>
 <body>
     
-    <!-- IMAGE MODAL POPUP -->
     <div id="imageModal">
         <img id="modalImage" src="" alt="Payment Receipt">
         <button class="close-modal" onclick="closeModal()">Close Image</button>
@@ -99,9 +97,9 @@
     <div id="loginOverlay">
         <div class="login-box glass-panel">
             <h2>Admin Security</h2>
-            <p style="color: #b2bec3; font-size: 14px;">Enter the access key to continue</p>
+            <p style="color: #b2bec3; font-size: 14px;">Enter password (default: admin123)</p>
             <input type="password" id="adminPassword" placeholder="Enter Password" onkeypress="handleEnter(event)">
-            <button id="adminLoginBtn" onclick="checkPassword()">Unlock Dashboard</button>
+            <button onclick="checkPassword()">Unlock Dashboard</button>
         </div>
     </div>
     
@@ -139,7 +137,6 @@
     </div>
 
     <script>
-        // LOGIN LOGIC
         function handleEnter(e) { if (e.key === 'Enter') checkPassword(); }
 
         if (sessionStorage.getItem('adminUnlocked') === 'true') {
@@ -149,30 +146,15 @@
 
         function checkPassword() {
             const password = document.getElementById('adminPassword').value;
-            const btn = document.getElementById('adminLoginBtn');
-            btn.textContent = 'Checking...';
-
-            fetch('/api/admin-login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: 'admin', password: password })
-            })
-            .then(res => res.json())
-            .then(data => {
-                btn.textContent = 'Unlock Dashboard';
-                if (data.role === 'admin') {
-                    sessionStorage.setItem('adminUnlocked', 'true');
-                    document.getElementById('loginOverlay').style.display = 'none';
-                    document.getElementById('adminContent').style.display = 'block';
-                    loadOrders();
-                } else {
-                    alert('Invalid Admin Password!');
-                }
-            })
-            .catch(error => {
-                btn.textContent = 'Unlock Dashboard';
-                alert('Server error! Hindi ma-contact ang backend.');
-            });
+            // Palitan ang password dito kung gusto mo ng iba
+            if (password === 'admin123') {
+                sessionStorage.setItem('adminUnlocked', 'true');
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                loadOrders();
+            } else {
+                alert('Mali ang Admin Password!');
+            }
         }
 
         function logout() {
@@ -186,26 +168,24 @@
             }
         });
 
-        // TABLE LOGIC
         function loadOrders() {
             const tbody = document.getElementById('adminTableBody');
             const orders = JSON.parse(localStorage.getItem('ericShopOrders')) || [];
 
             if (orders.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px; color: #b2bec3;">No pending orders found in the database.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px; color: #b2bec3;">No orders found in local storage.</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = '';
             orders.forEach((order, index) => {
-                
                 let viewImageButton = order.proofImage 
                     ? `<button class="btn-action btn-view" onclick="openModal(${index})">📷 View Receipt</button>` 
                     : '<span style="color:#d63031; font-size:12px;">No Image</span>';
 
                 tbody.innerHTML += `
                     <tr>
-                        <td style="color: #b2bec3;">${order.date}</td>
+                        <td style="color: #b2bec3;">${order.date || 'N/A'}</td>
                         <td style="color: #a29bfe; font-weight: bold;">${order.username}</td>
                         <td>${order.script}</td>
                         <td style="color: #fdcb6e;">${order.duration || 'N/A'}</td>
@@ -229,7 +209,6 @@
             loadOrders(); 
         }
 
-        // MODAL LOGIC
         function openModal(index) {
             let orders = JSON.parse(localStorage.getItem('ericShopOrders')) || [];
             if(orders[index] && orders[index].proofImage) {
