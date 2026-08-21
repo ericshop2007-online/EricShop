@@ -63,7 +63,6 @@
         </div>
     </main>
 
-    
     <script>
     function toggleAuth() {
         const loginForm = document.getElementById('loginForm');
@@ -80,52 +79,47 @@
         }
     }
 
-    // REGISTER LOGIC
+    // LOCALSTORAGE REGISTRATION
     document.getElementById('registerForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        const user = document.getElementById('regUser').value;
-        const email = document.getElementById('regEmail').value;
+        const user = document.getElementById('regUser').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
         const pass = document.getElementById('regPass').value;
 
-        fetch('/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: user, email: email, password: pass })
-        })
-        .then(res => res.json())
-        .then(data => {
-            alert(data.message);
-            if (data.message === 'Account created successfully!') {
-                toggleAuth(); // Pag success, lipat sa login
-            }
-        })
-        .catch(err => alert("Server error! Hindi ma-contact ang backend."));
+        let users = JSON.parse(localStorage.getItem('ericShopUsers')) || [];
+        
+        // Check kung existing na ang username
+        const existingUser = users.find(u => u.username === user);
+        if (existingUser) {
+            alert('May gumagamit na ng username na ito. Pumili ng iba.');
+            return;
+        }
+
+        users.push({ username: user, email: email, password: pass });
+        localStorage.setItem('ericShopUsers', JSON.stringify(users));
+
+        alert('Account created successfully!');
+        toggleAuth(); // Lipat sa Login form
     });
 
-    // LOGIN LOGIC
+    // LOCALSTORAGE LOGIN
     document.getElementById('loginForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        const user = document.getElementById('loginUser').value;
+        const user = document.getElementById('loginUser').value.trim();
         const pass = document.getElementById('loginPass').value;
 
-        fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: user, password: pass })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.message === 'Login successful') {
-                alert('Welcome ' + data.username + '!');
-                localStorage.setItem('loggedInUser', data.username);
-                window.location.href = 'index.html'; // Redirect sa Home Page
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(err => alert("Server error! Hindi ma-contact ang backend."));
-    });
+        let users = JSON.parse(localStorage.getItem('ericShopUsers')) || [];
+        
+        const foundUser = users.find(u => u.username === user && u.password === pass);
 
+        if (foundUser) {
+            alert('Welcome ' + foundUser.username + '!');
+            localStorage.setItem('loggedInUser', foundUser.username);
+            window.location.href = 'index.html'; 
+        } else {
+            alert('Mali ang username o password!');
+        }
+    });
     </script>
 </body>
 </html>
