@@ -17,9 +17,7 @@
         .checkout-wrapper { padding: 40px 20px; display: flex; justify-content: center; }
         .checkout-container { background: rgba(25, 25, 25, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 40px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
         
-       
         #scriptSelectionContainer { max-width: 500px; margin: 0 auto; }
-        
         #checkoutFormContainer { max-width: 850px; margin: 0 auto; }
 
         .checkout-container h2 { text-align: center; margin-bottom: 25px; color: #fff; font-weight: 700; }
@@ -35,23 +33,23 @@
         .qr-box { width: 220px; height: 220px; background: #fff; border-radius: 15px; display: inline-flex; justify-content: center; align-items: center; border: 4px solid #8b5cf6; padding: 10px; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2); margin: 0 auto; }
         .qr-box img { max-width: 100%; max-height: 100%; border-radius: 8px; }
         
-        .payment-box { border: 2px dashed #8b5cf6; padding: 15px; border-radius: 12px; background: rgba(139, 92, 246, 0.05); margin: 20px 0; text-align: center; }
-        .payment-box p { margin: 0; font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
-        .payment-box h3 { margin: 5px 0 0 0; font-size: 2rem; font-weight: 700; color: #8b5cf6; letter-spacing: 2px; }
-        
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: #1a1a1a; padding: 40px; border-radius: 20px; text-align: center; border: 1px solid #333; max-width: 400px; width: 90%; }
         .modal-icon { font-size: 3rem; margin-bottom: 15px; }
 
-        .checkout-layout { display: flex; gap: 30px; flex-wrap: wrap; text-align: left; }
-        .checkout-left { flex: 1.5; min-width: 300px; }
-        .checkout-right { flex: 1; min-width: 250px; background: rgba(139, 92, 246, 0.03); padding: 25px; border-radius: 15px; border: 1px solid rgba(139, 92, 246, 0.15); height: fit-content; }
+        /* BAGO: Layout para magkatabi ang QR at Guide */
+        .qr-guide-split { display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 30px; align-items: stretch; }
+        .qr-side { flex: 1; min-width: 250px; text-align: center; background: rgba(139, 92, 246, 0.03); border: 1px solid rgba(139, 92, 246, 0.15); border-radius: 15px; padding: 25px; }
+        .guide-side { flex: 1.5; min-width: 250px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 25px; text-align: left; }
+        
         .instructions-list { padding-left: 20px; color: #ccc; font-size: 0.95rem; line-height: 1.8; margin-bottom: 10px; }
         .instructions-list li { margin-bottom: 8px; }
     </style>
     <script>
-        const loggedInUser = localStorage.getItem('loggedInUser') || localStorage.getItem('ericShopUser');
-        if (!loggedInUser) {
+        // BAGO: Binabasa nito pareho kung anuman ang naka-save sa browser mo
+        const activeUser = localStorage.getItem('loggedInUser') || localStorage.getItem('ericShopUser');
+        
+        if (!activeUser) {
             document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('authWarningModal').style.display = 'flex';
                 document.getElementById('mainCheckoutContent').style.display = 'none';
@@ -79,14 +77,14 @@
             <div class="modal-icon">⚠️</div>
             <h3 style="color: #fff; margin-bottom: 10px;">Access Denied</h3>
             <p style="color: #aaa; margin-bottom: 25px;">You must log in or create an account first before purchasing a script.</p>
-            <button onclick="window.location.href='login.html'" class="btn-submit" style="background: linear-gradient(45deg, #ef4444, #b91c1c); width: 100%;">Go to Login</button>
+            <button onclick="window.location.href='/login'" class="btn-submit" style="background: linear-gradient(45deg, #ef4444, #b91c1c); width: 100%;">Go to Login</button>
         </div>
     </div>
 
     <header class="navbar fade-in">
         <div class="logo">Eric Shop <span class="badge">PRO</span></div>
         <div class="nav-links">
-            <a href="/"" class="btn-login" style="background: transparent; border: 1px solid #8b5cf6;">Home</a>
+            <a href="/" class="btn-login" style="background: transparent; border: 1px solid #8b5cf6;">Home</a>
         </div>
     </header>
 
@@ -135,45 +133,46 @@
                 Buying: <strong id="displayScriptName" style="color: #fff;">Premium Script</strong> for <strong id="displayScriptPrice" style="color: #a855f7;">₱ 150.00</strong>
             </p>
 
-            <div class="checkout-layout">
-               
-                <div class="checkout-left">
+            <!-- BAGO: Magkatabi na ang QR Code at Guide (Instructions) -->
+            <div class="qr-guide-split">
+                
+                <div class="qr-side">
                     <div id="durationContainer" style="text-align: left; margin-bottom: 25px;">
                         <label style="font-size: 0.85rem; color: #a855f7; font-weight: 600; text-transform: uppercase;">Select Key Duration:</label>
                         <select id="durationSelect" class="form-select" onchange="updatePrice()"></select>
                     </div>
 
-                    <div style="text-align: center;">
-                        <div class="qr-box">
-                            <img src="img/qr.png" alt="GCash QR Code">
-                        </div>
-
-
-                    <form id="paymentForm">
-                        <div style="margin-bottom: 15px; text-align: left;">
-                            <label for="buyerName" style="font-size: 0.85rem; color: #a855f7; font-weight: 600;">Your Username / Name:</label>
-                            <input type="text" id="buyerName" class="form-input" required>
-                        </div>
-
-                        <div style="margin-bottom: 15px; text-align: left;">
-                            <label for="buyerGcash" style="font-size: 0.85rem; color: #a855f7; font-weight: 600;">Your GCash Number (11 digits):</label>
-                            <input type="text" id="buyerGcash" class="form-input" placeholder="09123456789" maxlength="11" required>
-                        </div>
-
-                        <div style="margin-bottom: 25px; text-align: left;">
-                            <label for="paymentScreenshot" style="font-size: 0.85rem; color: #a855f7; font-weight: 600;">Upload Payment Receipt:</label>
-                            <input type="file" id="paymentScreenshot" class="form-input" accept="image/*" required>
-                        </div>
-                        
-                        <button type="submit" class="btn-submit" id="submitBtn" style="width: 100%; font-size: 1rem; padding: 15px; background: #5865F2; box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);">Join Discord & Create Ticket</button>
-                    </form>
+                    <div class="qr-box">
+                        <img src="img/qr.png" alt="GCash QR Code">
+                    </div>
                 </div>
 
-            
-                <div class="checkout-right" id="instructionsPanel">
-                  
+                <div class="guide-side" id="instructionsPanel">
+                    <!-- Ang JS ang maglalagay ng instructions dito depende sa laro -->
                 </div>
+
             </div>
+
+            <!-- PAYMENT FORM SA ILALIM -->
+            <form id="paymentForm">
+                <div style="margin-bottom: 15px; text-align: left;">
+                    <label for="buyerName" style="font-size: 0.85rem; color: #a855f7; font-weight: 600;">Your Username / Name:</label>
+                    <input type="text" id="buyerName" class="form-input" style="background: rgba(0,0,0,0.8); color: #888;" readonly required>
+                </div>
+
+                <div style="margin-bottom: 15px; text-align: left;">
+                    <label for="buyerGcash" style="font-size: 0.85rem; color: #a855f7; font-weight: 600;">Your GCash Number (11 digits):</label>
+                    <input type="text" id="buyerGcash" class="form-input" placeholder="09123456789" maxlength="11" required>
+                </div>
+
+                <div style="margin-bottom: 25px; text-align: left;">
+                    <label for="paymentScreenshot" style="font-size: 0.85rem; color: #a855f7; font-weight: 600;">Upload Payment Receipt:</label>
+                    <input type="file" id="paymentScreenshot" class="form-input" accept="image/*" required>
+                </div>
+                
+                <button type="submit" class="btn-submit" id="submitBtn" style="width: 100%; font-size: 1rem; padding: 15px; background: #5865F2; box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);">Join Discord & Create Ticket</button>
+            </form>
+            
         </div>
     </main>
 
@@ -189,8 +188,7 @@
             const instructionsPanel = document.getElementById('instructionsPanel');
 
             if (gameName.includes('STEAM') || gameName.includes('Steam')) {
-            
-                durationContainer.style.display = 'none'; // Hide duration selection for Steam
+                durationContainer.style.display = 'none'; 
                 durationSelect.innerHTML = '<option value="150" data-days="Lifetime">Lifetime - ₱ 150.00</option>';
                 
                 instructionsPanel.innerHTML = `
@@ -211,7 +209,6 @@
                     </div>
                 `;
             } else {
-            
                 durationContainer.style.display = 'block'; 
                 durationSelect.innerHTML = `
                     <option value="25" data-days="1 day">1 Day - ₱ 25.00</option>
@@ -245,6 +242,7 @@
 
             updatePrice();
             
+            // BAGO: Auto-fill ng username gamit ang kahit anong working storage key tapos hindi na pwedeng palitan
             const savedUser = localStorage.getItem('loggedInUser') || localStorage.getItem('ericShopUser');
             if(savedUser) {
                 document.getElementById('buyerName').value = savedUser;
