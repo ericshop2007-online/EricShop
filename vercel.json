@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "builds": [
     {
       "src": "server.js",
@@ -19,9 +20,5 @@
       "src": "/(.*)",
       "dest": "/public/$1"
     }
-
-    {
-  "cleanUrls": true
-}
   ]
 }
