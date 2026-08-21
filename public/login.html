@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +19,7 @@
     <main class="auth-wrapper fade-in delay-1">
         <div class="auth-container">
             
-            <!-- REGISTER FORM (Ito na ang unang lalabas) -->
+            <!-- REGISTER FORM -->
             <form id="registerForm" class="auth-form">
                 <h2>Create an Account</h2>
                 <p class="subtitle">Join Eric Shop for complete script access</p>
@@ -44,7 +41,7 @@
                 </div>
             </form>
 
-            <!-- LOGIN FORM (Naka-hide by default) -->
+            <!-- LOGIN FORM -->
             <form id="loginForm" class="auth-form" style="display: none;">
                 <h2>Welcome Back, Gamer</h2>
                 <p class="subtitle">Log in to purchase premium scripts</p>
@@ -83,18 +80,52 @@
         }
     }
 
-        // TAMA: May fetch pa rin, pero '/api/login' na lang ang address
-fetch('/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-})
-.then(res => res.json())
-.then(data => {
-    alert(data.message);
-});
-        
+    // REGISTER LOGIC
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const user = document.getElementById('regUser').value;
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPass').value;
 
-</script>
+        fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: user, email: email, password: pass })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            if (data.message === 'Account created successfully!') {
+                toggleAuth(); // Pag success, lipat sa login
+            }
+        })
+        .catch(err => alert("Server error! Hindi ma-contact ang backend."));
+    });
+
+    // LOGIN LOGIC
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const user = document.getElementById('loginUser').value;
+        const pass = document.getElementById('loginPass').value;
+
+        fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: user, password: pass })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message === 'Login successful') {
+                alert('Welcome ' + data.username + '!');
+                localStorage.setItem('loggedInUser', data.username);
+                window.location.href = 'index.html'; // Redirect sa Home Page
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(err => alert("Server error! Hindi ma-contact ang backend."));
+    });
+
+    </script>
 </body>
 </html>
