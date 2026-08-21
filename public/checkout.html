@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Eric Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background-color: #0a0a0a; color: #f0f0f0; font-family: 'Poppins', sans-serif; }
+        .navbar { background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(139, 92, 246, 0.2); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.6rem; color: #fff; font-weight: 700; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        .badge { background: linear-gradient(45deg, #8b5cf6, #5b21b6); padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; }
+        .btn-login, .btn-submit { background: linear-gradient(45deg, #8b5cf6, #6d28d9); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; text-decoration: none; display: inline-block; text-align: center; }
+        .btn-login:hover, .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4); }
+        
+        .checkout-wrapper { padding: 40px 20px; display: flex; justify-content: center; }
+        .checkout-container { background: rgba(25, 25, 25, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 40px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+        
+        /* Limit width specifically for selection to keep it centered and neat */
+        #scriptSelectionContainer { max-width: 500px; margin: 0 auto; }
+        /* Wider limit for checkout to fit instructions on the side */
+        #checkoutFormContainer { max-width: 850px; margin: 0 auto; }
+
+        .checkout-container h2 { text-align: center; margin-bottom: 25px; color: #fff; font-weight: 700; }
+        
+        .script-option { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); padding: 20px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s; margin-bottom: 15px; }
+        .script-option:hover { border-color: #8b5cf6; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(139, 92, 246, 0.15); }
+        .script-option h3 { margin: 0 0 5px 0; color: #fff; font-size: 1.1rem; }
+        .script-option p { margin: 0; color: #9ca3af; font-size: 0.85rem; }
+        
+        .form-select, .form-input { width: 100%; padding: 12px 15px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; border-radius: 8px; font-family: 'Poppins', sans-serif; outline: none; transition: border 0.3s; margin-top: 8px; box-sizing: border-box; }
+        .form-select:focus, .form-input:focus { border-color: #8b5cf6; }
+        
+        .qr-box { width: 220px; height: 220px; background: #fff; border-radius: 15px; display: inline-flex; justify-content: center; align-items: center; border: 4px solid #8b5cf6; padding: 10px; box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2); margin: 0 auto; }
+        .qr-box img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+        
+        .payment-box { border: 2px dashed #8b5cf6; padding: 15px; border-radius: 12px; background: rgba(139, 92, 246, 0.05); margin: 20px 0; text-align: center; }
+        .payment-box p { margin: 0; font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+        .payment-box h3 { margin: 5px 0 0 0; font-size: 2rem; font-weight: 700; color: #8b5cf6; letter-spacing: 2px; }
+        
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #1a1a1a; padding: 40px; border-radius: 20px; text-align: center; border: 1px solid #333; max-width: 400px; width: 90%; }
+        .modal-icon { font-size: 3rem; margin-bottom: 15px; }
+
+        /* Custom Flex Layout for Form + Instructions */
+        .checkout-layout { display: flex; gap: 30px; flex-wrap: wrap; text-align: left; }
+        .checkout-left { flex: 1.5; min-width: 300px; }
+        .checkout-right { flex: 1; min-width: 250px; background: rgba(139, 92, 246, 0.03); padding: 25px; border-radius: 15px; border: 1px solid rgba(139, 92, 246, 0.15); height: fit-content; }
+        .instructions-list { padding-left: 20px; color: #ccc; font-size: 0.95rem; line-height: 1.8; margin-bottom: 10px; }
+        .instructions-list li { margin-bottom: 8px; }
+    </style>
+    <script>
+        const loggedInUser = localStorage.getItem('ericShopUser');
+        if (!loggedInUser) {
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('authWarningModal').style.display = 'flex';
+                document.getElementById('mainCheckoutContent').style.display = 'none';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameType = urlParams.get('game');
+
+            if (gameType === 'steam') {
+                document.getElementById('robloxOptions').style.display = 'none';
+                document.getElementById('steamOptions').style.display = 'block';
+            } else {
+                document.getElementById('robloxOptions').style.display = 'block';
+                document.getElementById('steamOptions').style.display = 'none';
+            }
+        });
+    </script>
+</head>
+<body>
+    
+    <div id="authWarningModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-icon">⚠️</div>
+            <h3 style="color: #fff; margin-bottom: 10px;">Access Denied</h3>
+            <p style="color: #aaa; margin-bottom: 25px;">You must log in or create an account first before purchasing a script.</p>
+            <button onclick="window.location.href='login.html'" class="btn-submit" style="background: linear-gradient(45deg, #ef4444, #b91c1c); width: 100%;">Go to Login</button>
+        </div>
+    </div>
+
+    <header class="navbar fade-in">
+        <div class="logo">Eric Shop <span class="badge">PRO</span></div>
+        <div class="nav-links">
+            <a href="index.html" class="btn-login" style="background: transparent; border: 1px solid #8b5cf6;">Home</a>
+        </div>
+    </header>
+
+    <main class="checkout-wrapper fade-in delay-1" id="mainCheckoutContent">
+        
+        <div class="checkout-container" id="scriptSelectionContainer">
+            <h2>Select a Supported Script</h2>
+            
+            <div id="robloxOptions">
+                <div class="script-option">
+                    <div>
+                        <h3>Storage Hunter</h3>
+                        <p>Auto bid, Teleport, 1 tap interact, Walk speed ETC.</p>
+                    </div>
+                    <button onclick="proceedToCheckout('Storage Hunter (Roblox)')" class="btn-submit" style="padding: 8px 20px; font-size: 0.9rem;">Select</button>
+                </div>
+
+                <div class="script-option">
+                    <div>
+                        <h3>Jailbreak</h3>
+                        <p>Aimbot, Fly vehicle, Fly, Noclip, ESP ETC.</p>
+                    </div>
+                    <button onclick="proceedToCheckout('Jailbreak (Roblox)')" class="btn-submit" style="padding: 8px 20px; font-size: 0.9rem;">Select</button>
+                </div>
+            </div>
+
+            <div id="steamOptions" style="display: none;">
+                <div class="script-option">
+                    <div>
+                        <h3>STEAM</h3>
+                        <p>Bypass games</p>
+                    </div>
+                    <button onclick="proceedToCheckout('STEAM')" class="btn-submit" style="padding: 8px 20px; font-size: 0.9rem;">Select</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkout-container" id="checkoutFormContainer" style="display: none; text-align: center;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <button onclick="backToSelection()" style="background: none; border: none; color: #a855f7; cursor: pointer; font-size: 0.9rem; font-weight: 600; padding: 0;">← Back</button>
+            </div>
+            
+            <h2 style="color: #a855f7; text-transform: uppercase; margin-bottom: 5px; font-size: 1.8rem;">GCash Payment</h2>
+            
+            <p style="margin-bottom: 25px; color: #ccc; font-size: 1.1rem;">
+                Buying: <strong id="displayScriptName" style="color: #fff;">Premium Script</strong> for <strong id="displayScriptPrice" style="color: #a855f7;">₱ 150.00</strong>
+            </p>
+
+            <div class="checkout-layout">
+                <!-- LEFT SIDE: FORM -->
+                <div class="checkout-left">
+                    <div id="durationContainer" style="text-align: left; margin-bottom: 25px;">
+                        <label style="font-size: 0.85rem; color: #a855f7; font-weight: 600; text-transform: uppercase;">Select Key Duration:</label>
+                        <select id="durationSelect" class="form-select" onchange="updatePrice()"></select>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <div class="qr-box">
+                            <img src="img/qr.png" alt="GCash QR Code">
+                        </div>
+
+
+                    <form id="paymentForm">
+                        <div style="margin-bottom: 15px; text-align: left;">
+                            <label for="buyerName" style="font-size: 0.85rem; color: #a855f7; font-weight: 600;">Your Username / Name:</label>
+                            <input type="text" id="buyerName" class="form-input" required>
+                        </div>
+
+                        <div style="margin-bottom: 15px; text-align: left;">
+                            <label for="buyerGcash" style="font-size: 0.85rem; color: #a855f7; font-weight: 600;">Your GCash Number (11 digits):</label>
+                            <input type="text" id="buyerGcash" class="form-input" placeholder="09123456789" maxlength="11" required>
+                        </div>
+
+                        <div style="margin-bottom: 25px; text-align: left;">
+                            <label for="paymentScreenshot" style="font-size: 0.85rem; color: #a855f7; font-weight: 600;">Upload Payment Receipt:</label>
+                            <input type="file" id="paymentScreenshot" class="form-input" accept="image/*" required>
+                        </div>
+                        
+                        <button type="submit" class="btn-submit" id="submitBtn" style="width: 100%; font-size: 1rem; padding: 15px; background: #5865F2; box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);">Join Discord & Create Ticket</button>
+                    </form>
+                </div>
+
+                <!-- RIGHT SIDE: INSTRUCTIONS -->
+                <div class="checkout-right" id="instructionsPanel">
+                    <!-- Dynamic Instructions will load here via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let selectedGameName = "";
+
+        function proceedToCheckout(gameName) {
+            selectedGameName = gameName;
+            document.getElementById('displayScriptName').innerText = gameName;
+            
+            const durationSelect = document.getElementById('durationSelect');
+            const durationContainer = document.getElementById('durationContainer');
+            const instructionsPanel = document.getElementById('instructionsPanel');
+
+            if (gameName.includes('STEAM') || gameName.includes('Steam')) {
+                // Steam settings
+                durationContainer.style.display = 'none'; // Hide duration selection for Steam
+                durationSelect.innerHTML = '<option value="150" data-days="Lifetime">Lifetime - ₱ 150.00</option>';
+                
+                instructionsPanel.innerHTML = `
+                    <h3 style="color: #a855f7; margin-top: 0; margin-bottom: 15px;">How to Pay</h3>
+                    <ol class="instructions-list">
+                        <li>Scan or send to my GCash number.</li>
+                        <li>Type your username.</li>
+                        <li>Type your GCash number.</li>
+                        <li>Upload screenshot of payment.</li>
+                        <li>Click the "Join Discord and create ticket" button.</li>
+                    </ol>
+                    <p style="color: #fff; font-size: 0.95rem; font-weight: 600; margin-left: 20px;">Done!</p>
+                    
+                    <div style="margin-top: 25px; padding: 15px; background: rgba(168, 85, 247, 0.1); border-left: 4px solid #a855f7; border-radius: 5px;">
+                        <p style="color: #fff; font-size: 0.85rem; margin: 0; line-height: 1.6;">
+                            <strong style="color: #a855f7;">NOTE:</strong> Once you have joined the Discord and created a ticket, just ping me and tell me your website username.
+                        </p>
+                    </div>
+                `;
+            } else {
+                // Roblox settings
+                durationContainer.style.display = 'block'; // Show duration selection for Roblox
+                durationSelect.innerHTML = `
+                    <option value="25" data-days="1 day">1 Day - ₱ 25.00</option>
+                    <option value="50" data-days="2 days">2 Days - ₱ 50.00</option>
+                    <option value="75" data-days="3 days">3 Days - ₱ 75.00</option>
+                    <option value="100" data-days="4 days">4 Days - ₱ 100.00</option>
+                    <option value="125" data-days="5 days">5 Days - ₱ 125.00</option>
+                    <option value="150" data-days="6 days">6 Days - ₱ 150.00</option>
+                    <option value="175" data-days="7 days">7 Days - ₱ 175.00</option>
+                `;
+
+                instructionsPanel.innerHTML = `
+                    <h3 style="color: #a855f7; margin-top: 0; margin-bottom: 15px;">How to Pay</h3>
+                    <ol class="instructions-list">
+                        <li>Select key duration.</li>
+                        <li>Scan or send to my GCash number.</li>
+                        <li>Type your username.</li>
+                        <li>Type your GCash number.</li>
+                        <li>Upload screenshot of payment.</li>
+                        <li>Click the "Join Discord and create ticket" button.</li>
+                    </ol>
+                    <p style="color: #fff; font-size: 0.95rem; font-weight: 600; margin-left: 20px;">Done!</p>
+                    
+                    <div style="margin-top: 25px; padding: 15px; background: rgba(168, 85, 247, 0.1); border-left: 4px solid #a855f7; border-radius: 5px;">
+                        <p style="color: #fff; font-size: 0.85rem; margin: 0; line-height: 1.6;">
+                            <strong style="color: #a855f7;">NOTE:</strong> Once you have joined the Discord and created a ticket, just ping me and tell me your website username.
+                        </p>
+                    </div>
+                `;
+            }
+
+            updatePrice();
+            
+            const savedUser = localStorage.getItem('ericShopUser');
+            if(savedUser) {
+                document.getElementById('buyerName').value = savedUser;
+            }
+
+            document.getElementById('scriptSelectionContainer').style.display = 'none';
+            document.getElementById('checkoutFormContainer').style.display = 'block';
+        }
+
+        function backToSelection() {
+            document.getElementById('scriptSelectionContainer').style.display = 'block';
+            document.getElementById('checkoutFormContainer').style.display = 'none';
+        }
+
+        function updatePrice() {
+            const select = document.getElementById('durationSelect');
+            const price = select.value;
+            document.getElementById('displayScriptPrice').innerText = '₱ ' + price + '.00';
+        }
+
+        const form = document.getElementById('paymentForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            
+            const fileInput = document.getElementById('paymentScreenshot');
+            const file = fileInput.files[0];
+            const username = document.getElementById('buyerName').value;
+            const gcashNumber = document.getElementById('buyerGcash').value;
+            
+            const select = document.getElementById('durationSelect');
+            const selectedDuration = select.options[select.selectedIndex].getAttribute('data-days');
+            const selectedPrice = select.value;
+
+            submitBtn.innerHTML = '⚙️ Processing...';
+            submitBtn.style.opacity = '0.7';
+            submitBtn.style.pointerEvents = 'none'; 
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const base64Image = event.target.result;
+
+                const newOrder = {
+                    date: new Date().toLocaleDateString(),
+                    username: username,
+                    script: selectedGameName,
+                    duration: selectedDuration,
+                    price: '₱ ' + selectedPrice + '.00',
+                    proofImage: base64Image,
+                    status: 'Pending',
+                    gcash: gcashNumber 
+                };
+
+                let existingOrders = JSON.parse(localStorage.getItem('ericShopOrders')) || [];
+                existingOrders.push(newOrder);
+                localStorage.setItem('ericShopOrders', JSON.stringify(existingOrders));
+
+                submitBtn.innerHTML = '✅ Redirecting to Discord...';
+                
+                setTimeout(() => {
+                    window.location.href = 'https://discord.gg/MZnhXhM7w'; 
+                }, 1000);
+            };
+
+            if(file) {
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

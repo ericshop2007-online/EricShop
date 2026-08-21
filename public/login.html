@@ -1,0 +1,145 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Register | Eric Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="navbar fade-in">
+        <div class="logo">Eric Shop <span class="badge">PRO</span></div>
+        <div class="nav-links">
+            <a href="index.html" class="btn-login">Back to Home</a>
+        </div>
+    </header>
+
+    <main class="auth-wrapper fade-in delay-1">
+        <div class="auth-container">
+            
+            <!-- REGISTER FORM (Ito na ang unang lalabas) -->
+            <form id="registerForm" class="auth-form">
+                <h2>Create an Account</h2>
+                <p class="subtitle">Join Eric Shop for complete script access</p>
+
+                <label>Username</label>
+                <input type="text" id="regUser" placeholder="Choose a username" required>
+
+                <label>Email</label>
+                <input type="email" id="regEmail" placeholder="Enter your email address" required>
+
+                <label>Password</label>
+                <input type="password" id="regPass" placeholder="Create a password" required>
+
+                <button type="submit" class="btn-submit">Register</button>
+                <p class="toggle-text">Already have an account? <span style="cursor: pointer; color: blue; text-decoration: underline;" onclick="toggleAuth()">Log in here</span></p>
+
+                <div class="trust-badge">
+                    <p>🛡️ Verified Seller | 100% Secure Transactions</p>
+                </div>
+            </form>
+
+            <!-- LOGIN FORM (Naka-hide by default) -->
+            <form id="loginForm" class="auth-form" style="display: none;">
+                <h2>Welcome Back, Gamer</h2>
+                <p class="subtitle">Log in to purchase premium scripts</p>
+
+                <label>Username</label>
+                <input type="text" id="loginUser" placeholder="Enter your username" required>
+
+                <label>Password</label>
+                <input type="password" id="loginPass" placeholder="Enter your password" required>
+
+                <button type="submit" class="btn-submit">Login</button>
+                <p class="toggle-text">Don't have an account? <span style="cursor: pointer; color: blue; text-decoration: underline;" onclick="toggleAuth()">Register here</span></p>
+                
+                <div class="trust-badge">
+                    <p>🛡️ Verified Seller | 100% Secure Transactions</p>
+                </div>
+            </form>
+
+        </div>
+    </main>
+
+    
+    <script>
+    function toggleAuth() {
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        
+        if (registerForm.style.display !== 'none') {
+            registerForm.style.display = 'none';
+            loginForm.style.display = 'block';
+            loginForm.classList.add('fade-in'); 
+        } else {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            registerForm.classList.add('fade-in'); 
+        }
+    }
+
+    // REGISTER SUBMIT
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const user = document.getElementById('regUser').value;
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPass').value;
+        
+        try {
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, email: email, password: pass })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(data.message);
+                toggleAuth();
+                document.getElementById('registerForm').reset();
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            alert('Cannot connect to server.');
+        }
+    });
+
+    // LOGIN SUBMIT
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const loginUser = document.getElementById('loginUser').value;
+        const loginPass = document.getElementById('loginPass').value;
+        
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: loginUser, password: loginPass })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Pinapanatili lang natin ang username para sa session status, HINDI ang password
+                localStorage.setItem('ericShopUser', data.username);
+                alert('Welcome back, ' + data.username + '!');
+                window.location.href = 'index.html';
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            alert('Cannot connect to server.');
+        }
+    });
+</script>
+</body>
+</html>
