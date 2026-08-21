@@ -140,7 +140,23 @@
 
     <script>
        
+    fetch('/api/admin-login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+})
+.then(res => res.json())
+.then(data => {
+    if (data.role === 'admin') {
+        alert('Welcome Admin!');
+        // redirect sa dashboard
+    } else {
+        alert(data.message);
+    }
+});
 
+
+        
         // TABLE LOGIC
         function loadOrders() {
             const tbody = document.getElementById('adminTableBody');
