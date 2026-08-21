@@ -6,221 +6,103 @@
     <title>Admin Dashboard | Eric Shop</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            color: #ffffff;
-            min-height: 100vh;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-        #loginOverlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f2027;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-        .login-box {
-            padding: 40px;
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-        }
-        .login-box h2 {
-            margin-top: 0;
-            color: #6c5ce7;
-            margin-bottom: 10px;
-        }
-        .login-box input {
-            width: 100%; padding: 15px; margin: 20px 0; border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2);
-            color: white; font-size: 16px; outline: none; box-sizing: border-box;
-        }
-        .login-box button {
-            width: 100%; padding: 15px; background: #6c5ce7; color: white; border: none;
-            border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s;
-        }
-        .login-box button:hover { background: #a29bfe; box-shadow: 0 0 15px rgba(108, 92, 231, 0.5); }
-        .navbar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 40px; background: rgba(0, 0, 0, 0.2); border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .logo { font-size: 24px; font-weight: 700; }
-        .badge { background: #d63031; padding: 3px 8px; font-size: 12px; border-radius: 5px; margin-left: 5px; }
-        .btn-logout { background: transparent; color: white; border: 1px solid #d63031; padding: 8px 20px; border-radius: 5px; cursor: pointer; text-decoration: none; transition: 0.3s; }
-        .btn-logout:hover { background: #d63031; }
-        .admin-wrapper { padding: 40px; max-width: 1200px; margin: 0 auto; }
-        .admin-header { margin-bottom: 30px; }
-        .admin-header h2 { color: #a29bfe; margin-bottom: 5px; }
-        .admin-header p { color: #b2bec3; margin-top: 0; }
-        .table-container { overflow-x: auto; }
-        .logs-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .logs-table th, .logs-table td { padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .logs-table th { text-transform: uppercase; font-size: 13px; color: #a29bfe; letter-spacing: 1px; background: rgba(0,0,0,0.2); }
-        .logs-table tbody tr:hover { background: rgba(255,255,255,0.02); }
-        .status-pending { color: #fdcb6e; font-weight: 600; display: flex; align-items: center; gap: 5px; }
-        .status-pending::before { content: "•"; font-size: 20px; }
-        .status-approved { color: #00b894; font-weight: 600; display: flex; align-items: center; gap: 5px; }
-        .status-approved::before { content: "•"; font-size: 20px; }
-        .btn-action { padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-approve { background: #00b894; color: white; }
-        .btn-approve:hover { background: #00e6b8; box-shadow: 0 0 10px rgba(0, 184, 148, 0.4); }
-        .btn-view { background: #0984e3; color: white; margin-right: 5px;}
-        .btn-view:hover { background: #74b9ff; }
-        .text-muted { color: #636e72; font-style: italic; }
-
-        #imageModal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center; flex-direction: column;
-        }
-        #modalImage { max-width: 90%; max-height: 80vh; border-radius: 10px; border: 2px solid #a29bfe; }
-        .close-modal { margin-top: 20px; padding: 10px 20px; background: #d63031; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        body { background-color: #0a0a0a; color: #f0f0f0; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
+        .navbar { background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .logo { font-size: 1.6rem; color: #fff; font-weight: 700; }
+        .badge { background: linear-gradient(45deg, #8b5cf6, #5b21b6); padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; }
+        .btn-home { background: transparent; border: 1px solid #8b5cf6; color: white; padding: 8px 20px; border-radius: 8px; cursor: pointer; text-decoration: none; font-weight: 600; transition: all 0.3s; }
+        .btn-home:hover { background: rgba(139, 92, 246, 0.2); }
+        
+        .container { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+        h2 { color: #fff; margin-bottom: 25px; font-weight: 700; }
+        
+        .table-wrapper { background: rgba(25, 25, 25, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+        .orders-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .orders-table th, .orders-table td { padding: 15px 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.9rem; }
+        .orders-table th { background: rgba(139, 92, 246, 0.1); color: #a855f7; font-weight: 600; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .orders-table tr:hover { background: rgba(255, 255, 255, 0.02); }
+        
+        .proof-img { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid #8b5cf6; transition: transform 0.2s; }
+        .proof-img:hover { transform: scale(1.1); }
+        
+        .btn-delete { background: linear-gradient(45deg, #ef4444, #b91c1c); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: opacity 0.2s; }
+        .btn-delete:hover { opacity: 0.8; }
+        
+        .empty-msg { text-align: center; padding: 40px; color: #888; font-size: 1rem; }
     </style>
 </head>
 <body>
-    
-    <div id="imageModal">
-        <img id="modalImage" src="" alt="Payment Receipt">
-        <button class="close-modal" onclick="closeModal()">Close Image</button>
-    </div>
+    <header class="navbar">
+        <div class="logo">Eric Shop <span class="badge">ADMIN</span></div>
+        <a href="/" class="btn-home">Home</a>
+    </header>
 
-    <div id="loginOverlay">
-        <div class="login-box glass-panel">
-            <h2>Admin Security</h2>
-            <p style="color: #b2bec3; font-size: 14px;">Enter password (default: admin123)</p>
-            <input type="password" id="adminPassword" placeholder="Enter Password" onkeypress="handleEnter(event)">
-            <button onclick="checkPassword()">Unlock Dashboard</button>
-        </div>
-    </div>
-    
-    <div id="adminContent" style="display: none;">
-        <header class="navbar">
-            <div class="logo">Eric Shop <span class="badge">ADMIN</span></div>
-            <div class="nav-links">
-                <a href="#" class="btn-logout" onclick="logout()">Logout / Lock</a>
-            </div>
-        </header>
-        <main class="admin-wrapper">
-            <div class="admin-header">
-                <h2>Transaction Logs</h2>
-                <p>Verify buyer payments by checking their uploaded screenshots.</p>
-            </div>
-            <div class="glass-panel table-container">
-                <table class="logs-table">
+    <div class="container">
+        <h2>Customer Orders Dashboard</h2>
+        <div class="table-wrapper">
+            <div style="overflow-x: auto;">
+                <table class="orders-table">
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Buyer Username</th>
-                            <th>Script Purchased</th>
+                            <th>Username</th>
+                            <th>Script</th>
                             <th>Duration</th>
                             <th>Price</th>
-                            <th>Proof of Payment</th>
+                            <th>GCash #</th>
+                            <th>Proof</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="adminTableBody">
+                    <tbody id="ordersTableBody">
+                        <!-- Orders are dynamically loaded here -->
                     </tbody>
                 </table>
             </div>
-        </main>
+        </div>
     </div>
 
     <script>
-        function handleEnter(e) { if (e.key === 'Enter') checkPassword(); }
-
-        if (sessionStorage.getItem('adminUnlocked') === 'true') {
-            document.getElementById('loginOverlay').style.display = 'none';
-            document.getElementById('adminContent').style.display = 'block';
-        }
-
-        function checkPassword() {
-            const password = document.getElementById('adminPassword').value;
-            // Palitan ang password dito kung gusto mo ng iba
-            if (password === 'admin123') {
-                sessionStorage.setItem('adminUnlocked', 'true');
-                document.getElementById('loginOverlay').style.display = 'none';
-                document.getElementById('adminContent').style.display = 'block';
-                loadOrders();
-            } else {
-                alert('Mali ang Admin Password!');
-            }
-        }
-
-        function logout() {
-            sessionStorage.removeItem('adminUnlocked');
-            location.reload();
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            if (sessionStorage.getItem('adminUnlocked') === 'true') {
-                loadOrders();
-            }
-        });
-
         function loadOrders() {
-            const tbody = document.getElementById('adminTableBody');
+            const tbody = document.getElementById('ordersTableBody');
             const orders = JSON.parse(localStorage.getItem('ericShopOrders')) || [];
 
             if (orders.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 40px; color: #b2bec3;">No orders found in local storage.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="empty-msg">No pending or completed orders found in LocalStorage.</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = '';
             orders.forEach((order, index) => {
-                let viewImageButton = order.proofImage 
-                    ? `<button class="btn-action btn-view" onclick="openModal(${index})">📷 View Receipt</button>` 
-                    : '<span style="color:#d63031; font-size:12px;">No Image</span>';
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td style="color: #b2bec3;">${order.date || 'N/A'}</td>
-                        <td style="color: #a29bfe; font-weight: bold;">${order.username}</td>
-                        <td>${order.script}</td>
-                        <td style="color: #fdcb6e;">${order.duration || 'N/A'}</td>
-                        <td style="font-weight: 600;">${order.price}</td>
-                        <td>${viewImageButton}</td>
-                        <td><span class="${order.status === 'Approved' ? 'status-approved' : 'status-pending'}">${order.status}</span></td>
-                        <td>
-                            ${order.status === 'Pending' 
-                                ? `<button class="btn-action btn-approve" onclick="approveOrder(${index})">Approve</button>` 
-                                : '<span class="text-muted">Completed</span>'}
-                        </td>
-                    </tr>
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.date || 'N/A'}</td>
+                    <td><strong style="color: #fff;">${order.username || 'N/A'}</strong></td>
+                    <td>${order.script || 'N/A'}</td>
+                    <td>${order.duration || 'N/A'}</td>
+                    <td style="color: #a855f7; font-weight: 600;">${order.price || 'N/A'}</td>
+                    <td>${order.gcash || 'N/A'}</td>
+                    <td>
+                        ${order.proofImage ? `<img src="${order.proofImage}" class="proof-img" onclick="window.open('${order.proofImage}')" title="Click to view full image">` : 'No Image'}
+                    </td>
+                    <td><span style="color: #facc15; font-weight: 600; background: rgba(250, 204, 21, 0.1); padding: 4px 10px; border-radius: 6px;">${order.status || 'Pending'}</span></td>
+                    <td><button class="btn-delete" onclick="deleteOrder(${index})">Delete</button></td>
                 `;
+                tbody.appendChild(row);
             });
         }
 
-        function approveOrder(index) {
-            let orders = JSON.parse(localStorage.getItem('ericShopOrders')) || [];
-            orders[index].status = 'Approved';
-            localStorage.setItem('ericShopOrders', JSON.stringify(orders));
-            loadOrders(); 
-        }
-
-        function openModal(index) {
-            let orders = JSON.parse(localStorage.getItem('ericShopOrders')) || [];
-            if(orders[index] && orders[index].proofImage) {
-                document.getElementById('modalImage').src = orders[index].proofImage;
-                document.getElementById('imageModal').style.display = 'flex';
+        function deleteOrder(index) {
+            if (confirm("Are you sure you want to delete this order?")) {
+                let orders = JSON.parse(localStorage.getItem('ericShopOrders')) || [];
+                orders.splice(index, 1);
+                localStorage.setItem('ericShopOrders', JSON.stringify(orders));
+                loadOrders();
             }
         }
 
-        function closeModal() {
-            document.getElementById('imageModal').style.display = 'none';
-            document.getElementById('modalImage').src = "";
-        }
+        document.addEventListener('DOMContentLoaded', loadOrders);
     </script>
 </body>
 </html>
