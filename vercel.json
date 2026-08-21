@@ -1,5 +1,4 @@
 {
-  "version": 2,
   "cleanUrls": true,
   "builds": [
     {
@@ -15,6 +14,10 @@
     {
       "source": "/api/(.*)",
       "destination": "/server.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/public/$1"
     }
   ]
 }
