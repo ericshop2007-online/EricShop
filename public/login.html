@@ -83,6 +83,16 @@
         }
     }
 
+        // TAMA: May fetch pa rin, pero '/api/login' na lang ang address
+fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password })
+})
+.then(res => res.json())
+.then(data => {
+    alert(data.message);
+});
         
 
 </script>
