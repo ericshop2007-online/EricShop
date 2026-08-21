@@ -50,7 +50,7 @@
         .instructions-list li { margin-bottom: 8px; }
     </style>
     <script>
-        const loggedInUser = localStorage.getItem('ericShopUser');
+        const loggedInUser = localStorage.getItem('loggedInUser') || localStorage.getItem('ericShopUser');
         if (!loggedInUser) {
             document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('authWarningModal').style.display = 'flex';
@@ -178,23 +178,142 @@
     </main>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-    // Babasahin kung may naka-login gamit ang parehong keys mula sa index at login page
-    const activeUser = localStorage.getItem('loggedInUser') || localStorage.getItem('ericShopUser');
+        let selectedGameName = "";
 
-    if (!activeUser) {
-        alert("Access Denied! Kailangan mo munang mag-login para makapag-checkout.");
-        window.location.href = '/login';
-        return; // Ihihinto ang script kung walang user
-    }
+        function proceedToCheckout(gameName) {
+            selectedGameName = gameName;
+            document.getElementById('displayScriptName').innerText = gameName;
+            
+            const durationSelect = document.getElementById('durationSelect');
+            const durationContainer = document.getElementById('durationContainer');
+            const instructionsPanel = document.getElementById('instructionsPanel');
 
-    // Kung naka-login, ilalabas ang pangalan niya sa form (kung may input field ka para sa username)
-    const usernameInput = document.getElementById('checkoutUsername');
-    if (usernameInput) {
-        usernameInput.value = activeUser;
-        usernameInput.readOnly = true; // Para hindi na nila ma-edit ang username nila
-    }
-});
+            if (gameName.includes('STEAM') || gameName.includes('Steam')) {
+            
+                durationContainer.style.display = 'none'; // Hide duration selection for Steam
+                durationSelect.innerHTML = '<option value="150" data-days="Lifetime">Lifetime - ₱ 150.00</option>';
+                
+                instructionsPanel.innerHTML = `
+                    <h3 style="color: #a855f7; margin-top: 0; margin-bottom: 15px;">How to Pay</h3>
+                    <ol class="instructions-list">
+                        <li>Scan or send to my GCash number.</li>
+                        <li>Type your username.</li>
+                        <li>Type your GCash number.</li>
+                        <li>Upload screenshot of payment.</li>
+                        <li>Click the "Join Discord and create ticket" button.</li>
+                    </ol>
+                    <p style="color: #fff; font-size: 0.95rem; font-weight: 600; margin-left: 20px;">Done!</p>
+                    
+                    <div style="margin-top: 25px; padding: 15px; background: rgba(168, 85, 247, 0.1); border-left: 4px solid #a855f7; border-radius: 5px;">
+                        <p style="color: #fff; font-size: 0.85rem; margin: 0; line-height: 1.6;">
+                            <strong style="color: #a855f7;">NOTE:</strong> Once you have joined the Discord and created a ticket, just ping me and tell me your website username.
+                        </p>
+                    </div>
+                `;
+            } else {
+            
+                durationContainer.style.display = 'block'; 
+                durationSelect.innerHTML = `
+                    <option value="25" data-days="1 day">1 Day - ₱ 25.00</option>
+                    <option value="50" data-days="2 days">2 Days - ₱ 50.00</option>
+                    <option value="75" data-days="3 days">3 Days - ₱ 75.00</option>
+                    <option value="100" data-days="4 days">4 Days - ₱ 100.00</option>
+                    <option value="125" data-days="5 days">5 Days - ₱ 125.00</option>
+                    <option value="150" data-days="6 days">6 Days - ₱ 150.00</option>
+                    <option value="175" data-days="7 days">7 Days - ₱ 175.00</option>
+                `;
+
+                instructionsPanel.innerHTML = `
+                    <h3 style="color: #a855f7; margin-top: 0; margin-bottom: 15px;">How to Pay</h3>
+                    <ol class="instructions-list">
+                        <li>Select key duration.</li>
+                        <li>Scan or send to my GCash number.</li>
+                        <li>Type your username.</li>
+                        <li>Type your GCash number.</li>
+                        <li>Upload screenshot of payment.</li>
+                        <li>Click the "Join Discord and create ticket" button.</li>
+                    </ol>
+                    <p style="color: #fff; font-size: 0.95rem; font-weight: 600; margin-left: 20px;">Done!</p>
+                    
+                    <div style="margin-top: 25px; padding: 15px; background: rgba(168, 85, 247, 0.1); border-left: 4px solid #a855f7; border-radius: 5px;">
+                        <p style="color: #fff; font-size: 0.85rem; margin: 0; line-height: 1.6;">
+                            <strong style="color: #a855f7;">NOTE:</strong> Once you have joined the Discord and created a ticket, just ping me and tell me your website username.
+                        </p>
+                    </div>
+                `;
+            }
+
+            updatePrice();
+            
+            const savedUser = localStorage.getItem('loggedInUser') || localStorage.getItem('ericShopUser');
+            if(savedUser) {
+                document.getElementById('buyerName').value = savedUser;
+            }
+
+            document.getElementById('scriptSelectionContainer').style.display = 'none';
+            document.getElementById('checkoutFormContainer').style.display = 'block';
+        }
+
+        function backToSelection() {
+            document.getElementById('scriptSelectionContainer').style.display = 'block';
+            document.getElementById('checkoutFormContainer').style.display = 'none';
+        }
+
+        function updatePrice() {
+            const select = document.getElementById('durationSelect');
+            const price = select.value;
+            document.getElementById('displayScriptPrice').innerText = '₱ ' + price + '.00';
+        }
+
+        const form = document.getElementById('paymentForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            
+            const fileInput = document.getElementById('paymentScreenshot');
+            const file = fileInput.files[0];
+            const username = document.getElementById('buyerName').value;
+            const gcashNumber = document.getElementById('buyerGcash').value;
+            
+            const select = document.getElementById('durationSelect');
+            const selectedDuration = select.options[select.selectedIndex].getAttribute('data-days');
+            const selectedPrice = select.value;
+
+            submitBtn.innerHTML = '⚙️ Processing...';
+            submitBtn.style.opacity = '0.7';
+            submitBtn.style.pointerEvents = 'none'; 
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const base64Image = event.target.result;
+
+                const newOrder = {
+                    date: new Date().toLocaleDateString(),
+                    username: username,
+                    script: selectedGameName,
+                    duration: selectedDuration,
+                    price: '₱ ' + selectedPrice + '.00',
+                    proofImage: base64Image,
+                    status: 'Pending',
+                    gcash: gcashNumber 
+                };
+
+                let existingOrders = JSON.parse(localStorage.getItem('ericShopOrders')) || [];
+                existingOrders.push(newOrder);
+                localStorage.setItem('ericShopOrders', JSON.stringify(existingOrders));
+
+                submitBtn.innerHTML = '✅ Redirecting to Discord...';
+                
+                setTimeout(() => {
+                    window.location.href = 'https://discord.gg/MZnhXhM7w'; 
+                }, 1000);
+            };
+
+            if(file) {
+                reader.readAsDataURL(file);
+            }
+        });
     </script>
 </body>
 </html>
