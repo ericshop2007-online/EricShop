@@ -1,127 +1,175 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Eric Shop</title>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="style.css">
-        <style>
-            body { background-color: #0a0a0a; color: #f0f0f0; }
-            .navbar { background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(139, 92, 246, 0.2); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
-            .logo { font-size: 1.6rem; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
-            .badge { background: linear-gradient(45deg, #8b5cf6, #5b21b6); padding: 4px 12px; border-radius: 12px; box-shadow: 0 0 12px rgba(139, 92, 246, 0.6); }
-            .hero { text-align: center; padding: 90px 20px 60px; background: radial-gradient(circle at top, #1a103c 0%, #0a0a0a 100%); }
-            .hero h1 { font-size: 3.8rem; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; margin-bottom: 15px; }
-            .hero p { color: #aaa; font-size: 1.1rem; }
-            .games-section { text-align: center; padding: 20px; }
-            .games-section h2 { font-size: 2rem; color: #fff; margin-bottom: 10px; }
-            .game-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 30px; }
-            .card { background: rgba(25, 25, 25, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 25px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 350px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.6); backdrop-filter: blur(10px); }
-            .card:hover { transform: translateY(-12px); border-color: #8b5cf6; box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2); }
-            .card-img-tag { width: 100%; border-radius: 12px; margin-bottom: 20px; transition: transform 0.4s; }
-            .card:hover .card-img-tag { transform: scale(1.04); }
-            .card h3 { font-size: 1.5rem; margin-bottom: 10px; color: #fff; }
-            .btn-buy, .btn-login { background: linear-gradient(45deg, #8b5cf6, #6d28d9); color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; display: inline-block; }
-            .btn-buy:hover, .btn-login:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(139, 92, 246, 0.6); }
-            .contact-section { background: rgba(15, 15, 15, 0.8); border-top: 1px solid rgba(255, 255, 255, 0.05); box-shadow: inset 0 10px 30px rgba(0,0,0,0.5); }
-            .contact-buttons a { transition: all 0.3s ease; }
-            .contact-buttons a:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); filter: brightness(1.2); }
-        </style>
-    </head>
-    <body>
-        <header class="navbar fade-in">
-            <div class="logo">Eric Shop <span class="badge">PRO</span></div>
-            <div class="nav-links">
-                <a href="login.html" class="btn-login">Login / Register</a>
-            </div>
-        </header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eric Shop</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Idinagdag ang FontAwesome para sa mga Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { background-color: #0a0a0a; color: #f0f0f0; }
+        .navbar { background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(139, 92, 246, 0.2); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .logo { font-size: 1.6rem; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        .badge { background: linear-gradient(45deg, #8b5cf6, #5b21b6); padding: 4px 12px; border-radius: 12px; box-shadow: 0 0 12px rgba(139, 92, 246, 0.6); }
+        .hero { text-align: center; padding: 90px 20px 60px; background: radial-gradient(circle at top, #1a103c 0%, #0a0a0a 100%); }
+        .hero h1 { font-size: 3.8rem; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; margin-bottom: 15px; }
+        .hero p { color: #aaa; font-size: 1.1rem; }
+        
+        .games-section { text-align: center; padding: 20px; }
+        .games-section h2 { font-size: 2rem; color: #fff; margin-bottom: 30px; } 
+        
+        .game-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 30px; }
+        
+        .card { 
+            background: rgba(25, 25, 25, 0.6); 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            border-radius: 20px; 
+            padding: 25px; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            width: 350px; 
+            min-height: 480px; 
+            display: flex;
+            flex-direction: column;
+            text-align: center; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6); 
+            backdrop-filter: blur(10px); 
+        }
+        .card:hover { transform: translateY(-12px); border-color: #8b5cf6; box-shadow: 0 20px 45px rgba(139, 92, 246, 0.35); }
+        
+        .card-img-tag { width: 100%; border-radius: 12px; margin-bottom: 20px; transition: transform 0.4s; }
+        .card:hover .card-img-tag { transform: scale(1.04); }
+        
+        .card-content { display: flex; flex-direction: column; flex-grow: 1; }
+        
+        .card h3 { font-size: 1.5rem; margin-bottom: 10px; color: #fff; }
+        .btn-buy, .btn-login { background: linear-gradient(45deg, #8b5cf6, #6d28d9); color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; display: inline-block; }
+        
+        .btn-buy { margin-top: auto; width: 100%; } 
+        .btn-buy:hover, .btn-login:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(139, 92, 246, 0.6); }
+        
+        .contact-section { background: rgba(15, 15, 15, 0.8); border-top: 1px solid rgba(255, 255, 255, 0.05); box-shadow: inset 0 10px 30px rgba(0,0,0,0.5); }
+        .contact-buttons a { transition: all 0.3s ease; }
+        .contact-buttons a:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); filter: brightness(1.2); }
+    </style>
+</head>
+<body>
+    <header class="navbar fade-in">
+        <div class="logo">Eric Shop <span class="badge">PRO</span></div>
+        <div class="nav-links">
+            <a href="login.html" class="btn-login">Login / Register</a>
+        </div>
+    </header>
 
-        <main>
-            <section class="hero fade-in delay-1">
-                <h1>Game Script <b> by
-                  Eric.Dev</b></h1>
-                <p>Choose a game below to view the available premium scripts.</p>
-            </section>
+    <main>
+        <section class="hero fade-in delay-1">
+            <h1>Game Script <b>by Eric.Dev</b></h1>
+            <p>Choose a game below to view the available premium scripts.</p>
+        </section>
 
-            <section class="games-section fade-in delay-2">
-                <h2>Select a Game</h2>
-                <div class="game-grid">
-                    
-                    <div class="card">
-                        <img src="img/roblox.png" alt="Roblox" class="card-img-tag">
-                        <div class="card-content">
-                            <h3>Roblox</h3>
-                            
-                            <div style="text-align: left; font-size: 14px; margin: 15px 0; line-height: 1.6;">
-                                <strong style="color: #fff;">Supported Scripts:</strong>
-                                <ul style="padding-left: 20px; margin-top: 8px; color: #ccc;">
-                                    <li style="margin-bottom: 6px;">
-                                        <strong style="color: #8b5cf6;">FPS GAMES:</strong> Aimbot, WalkSpeed, Teleport, Noclip, ESP, etc.
-                                    </li>
-                                    <li style="margin-bottom: 6px;">
-                                        <strong style="color: #8b5cf6;">Storage Hunter:</strong> Auto bid, Teleport, 1 tap interact, Walk speed, etc.
-                                    </li>
-                                    <li style="font-style: italic; color: #888;">
-                                        More coming soon...
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <button class="btn-buy" onclick="window.location.href='checkout.html?game=roblox'">Select</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <img src="img/steam.png" alt="STEAM" class="card-img-tag">
-                        <div class="card-content">
-                            <h3>STEAM</h3>
-                            <p style="margin: 15px 0; color: #ccc;">bypass games</p>
-                            <button class="btn-buy" onclick="window.location.href='checkout.html?game=steam'">Select</button>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-        </main>
-
-        <footer class="contact-section fade-in delay-3" style="text-align: center; margin-top: 60px; padding: 50px 20px;">
-            <h2>Contact Me</h2>
-            <p style="margin-bottom: 25px; color: #aaa;">Need support or have questions? Send a message!</p>
-            
-            <div class="contact-buttons" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <a href="https://discord.gg/TeSKpDFa6" target="_blank" style="background-color: #5865F2; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">
-                    Join Discord Channel
-                </a>
+        <section class="games-section fade-in delay-2">
+            <h2>Select a Game</h2>
+            <div class="game-grid">
                 
-                <a href="mailto:ericshop2007@gmail.com" style="background-color: #EA4335; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">
-                    Message via Gmail
-                </a>
+                <div class="card">
+                    <img src="img/roblox.png" alt="Roblox" class="card-img-tag">
+                    <div class="card-content">
+                        <h3>Roblox</h3>
+                        
+                        <div style="text-align: left; font-size: 14px; margin: 15px 0; line-height: 1.6;">
+                            <strong style="color: #fff;">Supported Scripts:</strong>
+                            <ul style="padding-left: 20px; margin-top: 8px; color: #d1d5db; font-size: 15px;">
+                                <li style="margin-bottom: 6px;">
+                                    <strong style="color: #8b5cf6;">FPS GAMES:</strong> Aimbot, WalkSpeed, Teleport, Noclip, ESP, etc.
+                                </li>
+                                <li style="margin-bottom: 6px;">
+                                    <strong style="color: #8b5cf6;">Storage Hunter:</strong> Auto bid, Teleport, 1 tap interact, Walk speed, etc.
+                                </li>
+                                <li style="font-style: italic; color: #9ca3af;">
+                                    More coming soon...
+                                </li>
+                            </ul>
+                        </div>
+
+                        <button class="btn-buy" onclick="window.location.href='checkout.html?game=roblox'">Select</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <img src="img/steam.png" alt="STEAM" class="card-img-tag">
+                    <div class="card-content">
+                        <h3>STEAM</h3>
+                        <p style="margin: 15px 0; color: #d1d5db; font-size: 15px;">bypass games</p>
+                        <button class="btn-buy" onclick="window.location.href='checkout.html?game=steam'">Select</button>
+                    </div>
+                </div>
+
             </div>
-        </footer>
+        </section>
+
+        <!-- VERIFIED SELLER BADGE SECTION -->
+        <div class="verified-seller fade-in" style="text-align: center; margin-top: 80px; margin-bottom: -20px;">
+            <span class="badge" style="background: linear-gradient(45deg, #10b981, #059669); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); font-size: 1rem; padding: 8px 20px;">
+                <i class="fas fa-check-circle"></i> Verified Seller
+            </span>
+            <p style="color: #aaa; font-size: 0.95rem; margin-top: 15px;">Providing safe, high-quality scripts with dedicated support.</p>
+        </div>
+    </main>
+
+    <footer class="contact-section fade-in delay-3" style="text-align: center; margin-top: 60px; padding: 50px 20px;">
+        <h2>Contact Me</h2>
+        <p style="margin-bottom: 25px; color: #aaa;">Need support or have questions? Send a message!</p>
         
+        <div class="contact-buttons" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+            <a href="https://discord.gg/TeSKpDFa6" target="_blank" style="background-color: #5865F2; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 10px;">
+                <i class="fab fa-discord" style="font-size: 1.3rem;"></i> Join Discord Channel
+            </a>
+            
+            <a href="mailto:ericshop2007@gmail.com" style="background-color: #EA4335; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 10px;">
+                <i class="fas fa-envelope" style="font-size: 1.2rem;"></i> Message via Gmail
+            </a>
+        </div>
+    </footer>
+    
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-        
+        // Function para i-check at i-update ang Navbar
+        function updateNavigationState() {
             const activeUser = localStorage.getItem('ericShopUser') || localStorage.getItem('loggedInUser');
             const navLinks = document.querySelector('.nav-links');
 
             if (activeUser && navLinks) {
+                // Kung may naka-login, ipakita ang Welcome message at Logout button
                 navLinks.innerHTML = `
-                    <span style="color: white; font-weight: bold; margin-right: 15px;">Welcome, ${activeUser}!</span>
-                    <a href="#" id="btnLogout" class="btn-login" style="background: #dc3545;">Logout</a>
+                    <span style="color: white; font-weight: bold; margin-right: 15px;">
+                        <i class="fas fa-user-circle"></i> Welcome, ${activeUser}!
+                    </span>
+                    <a href="#" id="btnLogout" class="btn-login" style="background: #dc3545; padding: 10px 20px;">Logout</a>
                 `;
 
+                // Add event listener sa Logout button
                 document.getElementById('btnLogout').addEventListener('click', function(e) {
                     e.preventDefault();
-                
                     localStorage.removeItem('ericShopUser');
                     localStorage.removeItem('loggedInUser');
                     window.location.reload();
                 });
+            } else if (navLinks) {
+                // Kung walang naka-login, ibalik sa Login button (panlaban sa cache)
+                navLinks.innerHTML = `
+                    <a href="login.html" class="btn-login">Login / Register</a>
+                `;
             }
+        }
+
+        // I-run kapag nag-load ang page nang normal
+        document.addEventListener("DOMContentLoaded", updateNavigationState);
+
+        // I-run ULIT kapag galing ka sa "Back" button (ito yung bfcache fix)
+        window.addEventListener("pageshow", function(event) {
+            updateNavigationState();
         });
     </script>
 
-    </body>
-    </html>
+</body>
+</html>
